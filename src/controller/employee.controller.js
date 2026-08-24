@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt"
 import { Employee } from "../model/employee.model.js"
+import generateToken from "../../utils/generateToken.js"
 export const signUp = async (request,response,next)=>{
     try{
         let {password} =request.body
@@ -31,7 +32,7 @@ export const signIn= async(request,response,next)=>{
         if (!status){
             return response.status(400).json({message:"invalid password"})
         }
-        return response.status(200).json({message:"sign in successfully",user:{name:res.name,email:res.email}})
+        return response.status(200).json({message:"sign in successfully",user:{name:res.name,email:res.email,token:generateToken(res)}})
     }
     catch (err){
         console.log(err)
