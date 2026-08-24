@@ -11,6 +11,7 @@ app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 
 app.use("/api/auth",employeeRouter)
+app.use("/api/employees",employeeRouter)
 
 mongoose.connect("mongodb://localhost:27017/EmployeeManagement")
 .then(()=>{

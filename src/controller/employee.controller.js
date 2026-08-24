@@ -36,5 +36,83 @@ export const signIn= async(request,response,next)=>{
     }
     catch (err){
         console.log(err)
+        return response.status(500).json({message:"Internal server error"})
     }
+}
+
+export const getEmployees= async(request,response,next)=>{
+    try{
+        let employees =await Employee.find()
+        return response.status(200).json({message:"employees fetched successfully", employees})
+    }
+    catch(err){
+        console.log(err)
+        return response.status(500).json({message:"Internal server error"})
+    }
+}
+
+export const createEmployee = async (request,response,next)=>{
+    try{
+       let employee=await Employee.create(request.body)
+       response.status(201).json({message:"employee created successfully",employee:{name:employee.name,email:employee.email}})
+    }
+    catch (err){
+        console.log(err)
+        return response.status(500).json({message:"Internal server error"})
+
+    }
+}
+
+export const getEmployeeById = async(request,response,next)=>{
+    try{
+        let {id}=request.params
+        let employee =await Employee.findById(id)
+        if (!employee){
+            return response.status(404).json({message:"User not found"})
+        }
+        return response.status(200).json({message:"employee fetched successfully"})
+    }
+    catch(err){
+        console.log(err)
+        return response.status(500).json({message:"Internal server error"})
+    }
+}
+
+export const updateEmployee = async (request,response,next)=>{
+    try{
+        let {id} = request.params
+        let employee =await Employee.findById(id)
+        if (!employee){
+            return response.status(404).json({message:"User not found"})
+        }
+        await Employee.findByIdAndUpdate(id,request.body,{ new: true, runValidators: true })
+
+        return response.status(200).json({message:"employee updated successfully"})
+    
+    }
+    catch (err){
+        console.log(err)
+        return response.status(500).json({message:"Internal server error"})
+
+    }
+}
+
+export const deleteEmployee = async (request,response,next)=>{
+    try{
+        let {id} = request.params
+        let employee =await Employee.findById(id)
+        if (!employee){
+            return response.status(404).json({message:"User not found"})
+        }
+        
+        await Employee.findByIdAndDelete(id)
+        return response.status(200).json({message:"employee deleted successfully"})
+
+    }
+    catch (err){
+        console.log(err)
+        return response.status(500).json({message:"Internal server error"})
+
+    }
+
 }
