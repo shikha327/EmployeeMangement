@@ -1,5 +1,5 @@
 import express from "express"
-import { createEmployee, deleteEmployee, getEmployeeById, getEmployees, signIn, signUp, updateEmployee } from "../controller/employee.controller.js"
+import { createEmployee, deleteEmployee, findHierarchy, getEmployeeById, getEmployees, signIn, signUp, updateEmployee } from "../controller/employee.controller.js"
 import auth from "../middleware/auth.js"
 import { admin } from "../middleware/adminVerify.js"
 
@@ -11,5 +11,6 @@ router.get("/",auth,admin,getEmployees)
 router.post("/",auth,admin,createEmployee)
 router.get("/:id",auth,admin,getEmployeeById)
 router.put("/:id",auth,admin,updateEmployee)
+router.get("/:id/hierarchy",findHierarchy)
 
 export default router

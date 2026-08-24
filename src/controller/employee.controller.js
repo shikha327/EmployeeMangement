@@ -116,3 +116,46 @@ export const deleteEmployee = async (request,response,next)=>{
     }
 
 }
+
+export const findHierarchy= async(request,response,next)=>{
+    try{
+        let {id}=request.params
+
+        let employee= await Employee.findById(id).select("-password")
+        if (!employee)
+            return response.status(404).json({message:"employee not found"})
+
+        const buildHierarchy= async(employee)=>{
+            const reports= await Employee.find({managerId:employee._id}).select("-password")
+            const result = {
+                id: employee._id,
+                name: employee.name,
+                email: employee.email,
+                designation: employee.designation,
+                department: employee.department,
+                dateOfJoining: employee.dateOfJoining,
+                managerId: employee.managerId,
+                reports: []
+            };
+            for (const report of reports) {
+
+                const child = await buildHierarchy(report);
+
+                result.reports.push(child);
+            }
+
+            return result;
+        }
+        const hierarchy = await buildHierarchy(employee);
+
+        return response.status(200).json({
+            message: "Hierarchy fetched successfully",
+            hierarchy
+        });
+    }
+    catch (err){
+        console.log(err)
+        return response.status(500).json({message:"Internal server error"})
+
+    }
+}
